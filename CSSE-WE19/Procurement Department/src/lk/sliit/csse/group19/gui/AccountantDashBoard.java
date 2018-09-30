@@ -5,6 +5,10 @@
  */
 package lk.sliit.csse.group19.gui;
 
+import java.util.ArrayList;
+import javax.swing.DefaultListModel;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Muhammed Suhail
@@ -14,10 +18,74 @@ public class AccountantDashBoard extends javax.swing.JFrame {
     /**
      * Creates new form ManagerDashBoard
      */
+    private static boolean status = false;
+    private String purchaseId = null;
+    private int sumQty = 0;
+    
+    
     public AccountantDashBoard() {
         initComponents();
+        this.setLocationRelativeTo(null);
+        checkStatus();
+        loadReciptList();
+        this.StatusOfMakePaymentLabel.setText(Boolean.toString(status));
+        
     }
 
+    private void checkStatus() {
+        if(status == false) {
+            this.MakePaymentButton.setEnabled(false);
+        } else if(status == true) {
+            this.MakePaymentButton.setEnabled(true);
+        }
+    }
+    
+    private void loadReciptList() {
+        this.ReciptList.removeAll();
+        ArrayList<String> reciptList = new ArrayList<>();
+        reciptList.add("hi");
+        reciptList.add("hello");
+        DefaultListModel<String> model = new DefaultListModel<>();
+        for(String element: reciptList){
+            model.addElement(element);
+        }
+        this.ReciptList.setModel(model);
+    }
+    
+    private void UpdatePurchaseListTable() {
+        DefaultTableModel table = (DefaultTableModel)this.PurchaseListTable.getModel();
+//        if(table.getRowCount()!=0){
+//            while(table.getRowCount()!=0){
+//                table.removeRow(0);
+//            }
+//        }
+//        try {
+//            ResultSet RS = IM.getResult("item");
+//            while(RS.next()) {
+//                table.addRow(new Object[]{RS.getString("ItemName"),RS.getString("IID")});
+//            }
+//        }
+//        catch(SQLException e) {
+//        }
+    }
+    
+        private void UpdateReciptListTable() {
+        DefaultTableModel table = (DefaultTableModel)this.ReciptItemListTable.getModel();
+//        if(table.getRowCount()!=0){
+//            while(table.getRowCount()!=0){
+//                table.removeRow(0);
+//            }
+//        }
+//        try {
+//            ResultSet RS = IM.getResult("item");
+//            while(RS.next()) {
+//                table.addRow(new Object[]{RS.getString("ItemName"),RS.getString("IID")});
+//            }
+//        }
+//        catch(SQLException e) {
+//        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -27,81 +95,102 @@ public class AccountantDashBoard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jLabel1 = new javax.swing.JLabel();
+        MainPanel = new javax.swing.JPanel();
+        PurchaseListSelectionPanel = new javax.swing.JPanel();
+        SelectPurchaseListComboBox = new javax.swing.JComboBox<>();
+        SelectPurchseListLabel = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jPanel3 = new javax.swing.JPanel();
+        PurchaseListTable = new javax.swing.JTable();
+        ItemReciptPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        ReciptList = new javax.swing.JList<>();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        ReciptItemListTable = new javax.swing.JTable();
+        SelectItemReciptLabel = new javax.swing.JLabel();
+        ItemReceivedLabel = new javax.swing.JLabel();
+        MakePaymentButton = new javax.swing.JButton();
+        DisplayStatusLabel = new javax.swing.JLabel();
+        StatusOfMakePaymentLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel2.setDoubleBuffered(false);
+        PurchaseListSelectionPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        PurchaseListSelectionPanel.setDoubleBuffered(false);
 
-        jComboBox1.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        SelectPurchaseListComboBox.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        SelectPurchaseListComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        SelectPurchaseListComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SelectPurchaseListComboBoxActionPerformed(evt);
+            }
+        });
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        jLabel1.setText("Select Purchese Order");
+        SelectPurchseListLabel.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        SelectPurchseListLabel.setText("Select Purchese Order");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        PurchaseListTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Item", "Quantity", "Supplier", "Initiated Date ", "Expected Date "
             }
-        ));
-        jScrollPane2.setViewportView(jTable1);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, true
+            };
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(PurchaseListTable);
+        if (PurchaseListTable.getColumnModel().getColumnCount() > 0) {
+            PurchaseListTable.getColumnModel().getColumn(0).setResizable(false);
+            PurchaseListTable.getColumnModel().getColumn(1).setResizable(false);
+            PurchaseListTable.getColumnModel().getColumn(2).setResizable(false);
+            PurchaseListTable.getColumnModel().getColumn(3).setResizable(false);
+        }
+
+        javax.swing.GroupLayout PurchaseListSelectionPanelLayout = new javax.swing.GroupLayout(PurchaseListSelectionPanel);
+        PurchaseListSelectionPanel.setLayout(PurchaseListSelectionPanelLayout);
+        PurchaseListSelectionPanelLayout.setHorizontalGroup(
+            PurchaseListSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PurchaseListSelectionPanelLayout.createSequentialGroup()
                 .addContainerGap(45, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(PurchaseListSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(PurchaseListSelectionPanelLayout.createSequentialGroup()
+                        .addComponent(SelectPurchseListLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(SelectPurchaseListComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(45, Short.MAX_VALUE))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(87, 87, 87)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(18, 18, 18)
+        PurchaseListSelectionPanelLayout.setVerticalGroup(
+            PurchaseListSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PurchaseListSelectionPanelLayout.createSequentialGroup()
+                .addGap(80, 80, 80)
+                .addGroup(PurchaseListSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(SelectPurchseListLabel)
+                    .addComponent(SelectPurchaseListComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(25, 25, 25)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        ItemReciptPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+        ReciptList.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(ReciptList);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        ReciptItemListTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -109,82 +198,118 @@ public class AccountantDashBoard extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Item", "Quantity", "Supplier", "Received  Date"
             }
-        ));
-        jScrollPane3.setViewportView(jTable2);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        jLabel2.setText("Select item Recipt");
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(ReciptItemListTable);
+        if (ReciptItemListTable.getColumnModel().getColumnCount() > 0) {
+            ReciptItemListTable.getColumnModel().getColumn(0).setResizable(false);
+            ReciptItemListTable.getColumnModel().getColumn(1).setResizable(false);
+            ReciptItemListTable.getColumnModel().getColumn(2).setResizable(false);
+            ReciptItemListTable.getColumnModel().getColumn(3).setResizable(false);
+        }
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        jLabel3.setText("Item Received");
+        SelectItemReciptLabel.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        SelectItemReciptLabel.setText("Select item Recipt");
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        jButton1.setText("Make Payment");
+        ItemReceivedLabel.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        ItemReceivedLabel.setText("Item Received");
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        MakePaymentButton.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        MakePaymentButton.setText("Make Payment");
+
+        DisplayStatusLabel.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        DisplayStatusLabel.setText("Status");
+
+        StatusOfMakePaymentLabel.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        StatusOfMakePaymentLabel.setText("Null");
+
+        javax.swing.GroupLayout ItemReciptPanelLayout = new javax.swing.GroupLayout(ItemReciptPanel);
+        ItemReciptPanel.setLayout(ItemReciptPanelLayout);
+        ItemReciptPanelLayout.setHorizontalGroup(
+            ItemReciptPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ItemReciptPanelLayout.createSequentialGroup()
                 .addGap(45, 45, 45)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
+                .addGroup(ItemReciptPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(ItemReciptPanelLayout.createSequentialGroup()
+                        .addGroup(ItemReciptPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(ItemReceivedLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addGap(190, 190, 190)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel2)
+                        .addGap(84, 84, 84)
+                        .addGroup(ItemReciptPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(ItemReciptPanelLayout.createSequentialGroup()
+                                .addComponent(DisplayStatusLabel)
+                                .addGap(63, 63, 63)
+                                .addComponent(StatusOfMakePaymentLabel))
+                            .addComponent(MakePaymentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(91, 91, 91))
+                    .addGroup(ItemReciptPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(SelectItemReciptLabel)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 537, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(45, Short.MAX_VALUE))
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        ItemReciptPanelLayout.setVerticalGroup(
+            ItemReciptPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ItemReciptPanelLayout.createSequentialGroup()
                 .addGap(40, 40, 40)
-                .addComponent(jLabel2)
+                .addComponent(SelectItemReciptLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(ItemReciptPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(ItemReciptPanelLayout.createSequentialGroup()
+                        .addGroup(ItemReciptPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(DisplayStatusLabel)
+                            .addComponent(StatusOfMakePaymentLabel))
+                        .addGap(58, 58, 58)
+                        .addComponent(MakePaymentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(22, 22, 22)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ItemReceivedLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(39, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        javax.swing.GroupLayout MainPanelLayout = new javax.swing.GroupLayout(MainPanel);
+        MainPanel.setLayout(MainPanelLayout);
+        MainPanelLayout.setHorizontalGroup(
+            MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(MainPanelLayout.createSequentialGroup()
+                .addComponent(PurchaseListSelectionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(ItemReciptPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        MainPanelLayout.setVerticalGroup(
+            MainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(PurchaseListSelectionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(ItemReciptPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void SelectPurchaseListComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectPurchaseListComboBoxActionPerformed
+        // TODO add your handling code here:
+        this.purchaseId = this.SelectPurchaseListComboBox.getSelectedItem().toString();
+    }//GEN-LAST:event_SelectPurchaseListComboBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -223,19 +348,21 @@ public class AccountantDashBoard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JList<String> jList1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
+    private javax.swing.JLabel DisplayStatusLabel;
+    private javax.swing.JLabel ItemReceivedLabel;
+    private javax.swing.JPanel ItemReciptPanel;
+    private javax.swing.JPanel MainPanel;
+    private javax.swing.JButton MakePaymentButton;
+    private javax.swing.JPanel PurchaseListSelectionPanel;
+    private javax.swing.JTable PurchaseListTable;
+    private javax.swing.JTable ReciptItemListTable;
+    private javax.swing.JList<String> ReciptList;
+    private javax.swing.JLabel SelectItemReciptLabel;
+    private javax.swing.JComboBox<String> SelectPurchaseListComboBox;
+    private javax.swing.JLabel SelectPurchseListLabel;
+    private javax.swing.JLabel StatusOfMakePaymentLabel;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
     // End of variables declaration//GEN-END:variables
 }
