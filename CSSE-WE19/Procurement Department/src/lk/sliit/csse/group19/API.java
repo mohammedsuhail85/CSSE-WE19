@@ -6,6 +6,7 @@
 package lk.sliit.csse.group19;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import org.json.*;
@@ -58,5 +59,47 @@ public class API {
         }
         
         return arr;
+    }
+    
+    public void postValue(JSONObject data) {
+        try{
+        URL url = new URL(this.URL);
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setDoInput(true);
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setRequestMethod("POST");
+        
+        System.out.println("object POST ");
+        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+        wr.write(data.toString());
+        wr.flush();
+        
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void updateValue(JSONObject data){
+        try{
+        URL url = new URL(this.URL);
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setDoInput(true);
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setRequestMethod("UPDATE");
+
+        System.out.println("Object UPDATE");
+        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+        wr.write(data.toString());
+        wr.flush();
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }

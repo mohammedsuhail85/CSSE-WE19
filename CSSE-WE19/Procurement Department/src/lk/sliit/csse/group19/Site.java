@@ -5,6 +5,8 @@
  */
 package lk.sliit.csse.group19;
 
+import org.json.JSONObject;
+
 /**
  *
  * @author Muhammed Suhail
@@ -23,6 +25,12 @@ public class Site {
         this.siteManager = siteManager;
     }
 
+    public Site(String siteName, String siteAddress, String siteManager) {
+        this.siteName = siteName;
+        this.siteAddress = siteAddress;
+        this.siteManager = siteManager;
+    }
+    
     public int getSiteID() {
         return siteID;
     }
@@ -55,5 +63,22 @@ public class Site {
         this.siteManager = siteManager;
     }
  
+    public void addNewSite(){
+        JSONObject obj = new JSONObject();
+        obj.put("siteName", this.siteName);
+        obj.put("siteAddress", this.siteAddress);
+        obj.put("siteAddress", this.siteManager);
+        
+        new API("").postValue(obj);
+    }
+    
+    public void updateSiteDetails(){
+        JSONObject obj = new JSONObject();
+        obj.put("siteName", this.siteName);
+        obj.put("siteAddress", this.siteAddress);
+        obj.put("siteAddress", this.siteManager);
+        
+        new API(""+Integer.toString(this.siteID)).updateValue(obj);
+    }
     
 }

@@ -5,9 +5,17 @@
  */
 package lk.sliit.csse.group19.gui;
 
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import jdk.nashorn.internal.runtime.regexp.joni.Warnings;
 import org.json.JSONArray;
-import lk.sliit.csse.group19.*;
+import lk.sliit.csse.group19.ProcurementFacade;
+import org.json.JSONObject;
 
 /**
  *
@@ -18,11 +26,14 @@ public class ManagerDashBoard extends javax.swing.JFrame {
     /**
      * Creates new form AccountDashBoard
      */
+    ProcurementFacade procurementFacade = new ProcurementFacade();
+    
+    private int supplierSelect = -1;
+    
     public ManagerDashBoard() {
         initComponents();
         this.PaymentButton.doClick();
         this.setLocationRelativeTo(null);
-        loadApproveListTable();
     }
 
     private void loadApproveListTable() {
@@ -32,13 +43,207 @@ public class ManagerDashBoard extends javax.swing.JFrame {
                 table.removeRow(0);
             }
         }
-        
-        JSONArray arr = new API("https://jsonplaceholder.typicode.com/posts").getValues();
-        
-        for(int x=0; x<arr.length(); x++) {
-//                System.out.println(arr.getJSONObject(x).getInt("id"));
-            table.addRow(new Object[]{arr.getJSONObject(x).getInt("id"),arr.getJSONObject(x).getString("title")});
+        Thread th = new Thread(){
+            public void run(){
+                JSONArray arr = procurementFacade.getValues("https://jsonplaceholder.typicode.com/posts");
+
+                for(int x=0; x<arr.length(); x++) {
+        //            System.out.println(arr.getJSONObject(x).toString());
+                    table.addRow(new Object[]{arr.getJSONObject(x).getInt("id"),arr.getJSONObject(x).getString("title"),
+                        arr.getJSONObject(x).getInt("userId"),arr.getJSONObject(x).getString("body")});
+                }
+            }
+        };
+        th.start();
+    }
+    
+    private void loadItemResultTable() {
+        DefaultTableModel table = (DefaultTableModel)this.ItemResultTable.getModel();
+        if(table.getRowCount()!=0){
+            while(table.getRowCount()!=0){
+                table.removeRow(0);
+            }
         }
+        Thread th = new Thread(){
+            public void run(){
+                JSONArray arr = procurementFacade.getValues("https://jsonplaceholder.typicode.com/posts");
+
+                for(int x=0; x<arr.length(); x++) {
+        //            System.out.println(arr.getJSONObject(x).toString());
+                    table.addRow(new Object[]{arr.getJSONObject(x).getInt("id"),arr.getJSONObject(x).getString("title"),
+                        arr.getJSONObject(x).getInt("userId"),arr.getJSONObject(x).getString("body")});
+                }
+            }
+        };
+        th.start();
+    }
+    
+    private void loadEmployeeListTable() {
+        DefaultTableModel table = (DefaultTableModel)this.EmployeeListTable.getModel();
+        if(table.getRowCount()!=0){
+            while(table.getRowCount()!=0){
+                table.removeRow(0);
+            }
+        }
+        Thread th = new Thread(){
+            public void run(){
+                JSONArray arr = procurementFacade.getValues("https://jsonplaceholder.typicode.com/posts");
+
+                for(int x=0; x<arr.length(); x++) {
+        //            System.out.println(arr.getJSONObject(x).toString());
+                    table.addRow(new Object[]{arr.getJSONObject(x).getInt("id"),arr.getJSONObject(x).getString("title"),
+                        arr.getJSONObject(x).getInt("userId"),arr.getJSONObject(x).getString("body")});
+                }
+            }
+        };
+        th.start();
+    }
+    
+    private void loadSiteList() {
+        this.SiteList.removeAll();
+        DefaultListModel<String> model = new DefaultListModel<>();
+        
+        Thread th = new Thread(){
+            public void run(){
+                try {
+                    JSONArray arr = procurementFacade.getValues("https://jsonplaceholder.typicode.com/posts");
+
+                    for(int x=0; x<arr.length(); x++) {
+            //            System.out.println(arr.getJSONObject(x).toString());
+                        model.addElement(arr.getJSONObject(x).getString("title"));
+                    }
+                    } catch(ArrayIndexOutOfBoundsException e){
+                        try {
+                            e.wait(1000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(ManagerDashBoard.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                }
+            }
+        };
+        th.start();
+
+        this.SiteList.setModel(model);
+    }
+    
+    private void loadSupplierList() {
+        this.SupplierList.removeAll();
+        DefaultListModel<String> model = new DefaultListModel<>();
+        
+        Thread th = new Thread(){
+            public void run(){
+                try {
+                    JSONArray arr = procurementFacade.getValues("https://jsonplaceholder.typicode.com/posts");
+
+                    for(int x=0; x<arr.length(); x++) {
+            //            System.out.println(arr.getJSONObject(x).toString());
+                        model.addElement(arr.getJSONObject(x).getString("title"));
+                    }
+                    } catch(ArrayIndexOutOfBoundsException e){
+                        try {
+                            e.wait(1000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(ManagerDashBoard.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                }
+            }
+        };
+        th.start();
+
+        this.SupplierList.setModel(model);
+    }
+    
+    private void loadItemCategoryComboBox() {
+        this.CategoryComboBox.removeAllItems();
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        
+        Thread th = new Thread(){
+        public void run(){
+            try {
+                JSONArray arr = procurementFacade.getValues("");
+
+                for(int x=0; x<arr.length(); x++) {
+        //            System.out.println(arr.getJSONObject(x).toString());
+                    model.addElement(arr.getJSONObject(x).getString("title"));
+                }
+                } catch(ArrayIndexOutOfBoundsException e){
+                    try {
+                        e.wait(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(ManagerDashBoard.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        };
+        th.start();
+        
+        this.CategoryComboBox.setModel(model);
+    }
+    
+        private void loadSelectSupplierComboBox() {
+        this.SelectSupplierComboBoxApproval.removeAllItems();
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        
+        Thread th = new Thread(){
+        public void run(){
+            try {
+                JSONArray arr = procurementFacade.getValues("https://jsonplaceholder.typicode.com/posts");
+
+                for(int x=0; x<arr.length(); x++) {
+        //            System.out.println(arr.getJSONObject(x).toString());
+                    model.addElement(arr.getJSONObject(x).getString("title"));
+                }
+                } catch(ArrayIndexOutOfBoundsException e){
+                    try {
+                        e.wait(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(ManagerDashBoard.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        };
+        th.start();
+        
+        this.CategoryComboBox.setModel(model);
+    }
+        
+    private void loadSiteManagerComboBox() {
+        this.SiteManagerComboBox.removeAllItems();
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+        
+        Thread th = new Thread(){
+        public void run(){
+            try {
+                JSONArray arr = procurementFacade.getValues("https://jsonplaceholder.typicode.com/posts");
+
+                for(int x=0; x<arr.length(); x++) {
+        //            System.out.println(arr.getJSONObject(x).toString());
+                    model.addElement(arr.getJSONObject(x).getString("title"));
+                }
+                } catch(ArrayIndexOutOfBoundsException e){
+                    try {
+                        e.wait(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(ManagerDashBoard.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        };
+        th.start();
+        
+        this.SiteManagerComboBox.setModel(model);
+    }
+    
+    private boolean checkDigit(String str) {
+        if(str == null || str.trim().isEmpty()) {
+            return false;
+        }
+        for (int i = 0; i < str.length(); i++) {
+            if(!Character.isDigit(str.charAt(i))) {
+                return false;
+            } 
+        }
+        return true;
     }
     
     /**
@@ -50,8 +255,8 @@ public class ManagerDashBoard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        MainScrollPane = new javax.swing.JScrollPane();
         MainPanel = new javax.swing.JPanel();
-        PaymentPanel = new javax.swing.JPanel();
         SupplierPanel = new javax.swing.JPanel();
         CurrentSupplierPanel = new javax.swing.JPanel();
         SelectSupplierLabel = new javax.swing.JLabel();
@@ -71,6 +276,27 @@ public class ManagerDashBoard extends javax.swing.JFrame {
         AddNewSupplierButton = new javax.swing.JButton();
         SupplierUpdateButton = new javax.swing.JButton();
         SupplierPhoneNoTextField = new javax.swing.JTextField();
+        SitePanel = new javax.swing.JPanel();
+        CurrentSitePanel = new javax.swing.JPanel();
+        SelectSiteLabel = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        SiteList = new javax.swing.JList<>();
+        SiteAddUpdatePanel = new javax.swing.JPanel();
+        AddUpdateLabel = new javax.swing.JLabel();
+        SiteNameTextField = new javax.swing.JTextField();
+        SiteCurrentCapacityTextField = new javax.swing.JTextField();
+        SiteManagerComboBox = new javax.swing.JComboBox<>();
+        SiteNameLabel = new javax.swing.JLabel();
+        SiteAddressLabel = new javax.swing.JLabel();
+        SiteManagerLabel = new javax.swing.JLabel();
+        AddNewSiteButton = new javax.swing.JButton();
+        SiteUpdateButton = new javax.swing.JButton();
+        ApprovelPanel = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        ApprovelListTable = new javax.swing.JTable();
+        SelectSupplierLabelApproval = new javax.swing.JLabel();
+        SelectSupplierComboBoxApproval = new javax.swing.JComboBox<>();
+        SetSupplierApproveButton = new javax.swing.JButton();
         ItemPanel = new javax.swing.JPanel();
         ItemsScrollPane = new javax.swing.JScrollPane();
         ItemResultTable = new javax.swing.JTable();
@@ -89,36 +315,12 @@ public class ManagerDashBoard extends javax.swing.JFrame {
         AddItemButton = new javax.swing.JButton();
         SearchItemTextfieldItem = new javax.swing.JTextField();
         SearchItemButtonItem = new javax.swing.JButton();
-        SitePanel = new javax.swing.JPanel();
-        CurrentSitePanel = new javax.swing.JPanel();
-        SelectSiteLabel = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        SiteList = new javax.swing.JList<>();
-        SiteAddUpdatePanel = new javax.swing.JPanel();
-        AddUpdateLabel = new javax.swing.JLabel();
-        SiteNameTextField = new javax.swing.JTextField();
-        SiteAddressTextField = new javax.swing.JTextField();
-        SiteStorageCapacityTextField = new javax.swing.JTextField();
-        SiteCurrentCapacityTextField = new javax.swing.JTextField();
-        SiteManagerComboBox = new javax.swing.JComboBox<>();
-        SiteNameLabel = new javax.swing.JLabel();
-        SiteAddressLabel = new javax.swing.JLabel();
-        SiteStorageCapacityLabel = new javax.swing.JLabel();
-        SiteCurrentCapacityLabel = new javax.swing.JLabel();
-        SiteManagerLabel = new javax.swing.JLabel();
-        AddNewSiteButton = new javax.swing.JButton();
-        SiteUpdateButton = new javax.swing.JButton();
-        ApprovelPanel = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        ApprovelListTable = new javax.swing.JTable();
-        SelectSupplierLabelApproval = new javax.swing.JLabel();
-        SelectSupplierComboBoxApproval = new javax.swing.JComboBox<>();
-        SetSupplierApproveButton = new javax.swing.JButton();
         EmployeePanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        EmployeeListTable = new javax.swing.JTable();
+        SearchEmployeeTextField = new javax.swing.JTextField();
+        SearchEmployeeButton = new javax.swing.JButton();
+        PaymentPanel = new javax.swing.JPanel();
         SubPanels = new javax.swing.JLayeredPane();
         PaymentTabber = new javax.swing.JTabbedPane();
         SuccessfulPaymentTabber = new javax.swing.JTabbedPane();
@@ -134,25 +336,15 @@ public class ManagerDashBoard extends javax.swing.JFrame {
         ApprovalButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        MainScrollPane.setBackground(new java.awt.Color(0, 0, 255));
 
         MainPanel.setBackground(new java.awt.Color(255, 255, 255));
         MainPanel.setMinimumSize(new java.awt.Dimension(1280, 720));
         MainPanel.setPreferredSize(new java.awt.Dimension(1280, 720));
         MainPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        javax.swing.GroupLayout PaymentPanelLayout = new javax.swing.GroupLayout(PaymentPanel);
-        PaymentPanel.setLayout(PaymentPanelLayout);
-        PaymentPanelLayout.setHorizontalGroup(
-            PaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1030, Short.MAX_VALUE)
-        );
-        PaymentPanelLayout.setVerticalGroup(
-            PaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 590, Short.MAX_VALUE)
-        );
-
-        MainPanel.add(PaymentPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(229, 110, 1030, 590));
 
         SelectSupplierLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         SelectSupplierLabel.setText("Select Supplier");
@@ -161,6 +353,11 @@ public class ManagerDashBoard extends javax.swing.JFrame {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
+        });
+        SupplierList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                SupplierListValueChanged(evt);
+            }
         });
         jScrollPane4.setViewportView(SupplierList);
 
@@ -178,7 +375,7 @@ public class ManagerDashBoard extends javax.swing.JFrame {
         SupplierAddressTextField.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         SupplierNameLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        SupplierNameLabel.setText("Site Name");
+        SupplierNameLabel.setText("Supplier Name");
 
         SupplierAddressLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         SupplierAddressLabel.setText("Address");
@@ -193,10 +390,20 @@ public class ManagerDashBoard extends javax.swing.JFrame {
         SupplierPhoneLabel.setText("Phone");
 
         AddNewSupplierButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        AddNewSupplierButton.setText("Add new site");
+        AddNewSupplierButton.setText("Add new supplier");
+        AddNewSupplierButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddNewSupplierButtonActionPerformed(evt);
+            }
+        });
 
         SupplierUpdateButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         SupplierUpdateButton.setText("Update");
+        SupplierUpdateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SupplierUpdateButtonActionPerformed(evt);
+            }
+        });
 
         SupplierPhoneNoTextField.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
 
@@ -206,11 +413,11 @@ public class ManagerDashBoard extends javax.swing.JFrame {
             SupplierAddUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(SupplierAddUpdatePanelLayout.createSequentialGroup()
                 .addGroup(SupplierAddUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SupplierAddUpdatePanelLayout.createSequentialGroup()
-                        .addContainerGap(333, Short.MAX_VALUE)
+                    .addGroup(SupplierAddUpdatePanelLayout.createSequentialGroup()
+                        .addContainerGap(304, Short.MAX_VALUE)
                         .addComponent(SupplierUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(AddNewSupplierButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(AddNewSupplierButton))
                     .addGroup(SupplierAddUpdatePanelLayout.createSequentialGroup()
                         .addGap(92, 92, 92)
                         .addGroup(SupplierAddUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -284,7 +491,7 @@ public class ManagerDashBoard extends javax.swing.JFrame {
                 .addGroup(CurrentSupplierPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(SupplierAddUpdatePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(CurrentSupplierPanelLayout.createSequentialGroup()
-                        .addComponent(SelectSupplierLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+                        .addComponent(SelectSupplierLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 61, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(37, 37, 37))
@@ -305,179 +512,10 @@ public class ManagerDashBoard extends javax.swing.JFrame {
             SupplierPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 590, Short.MAX_VALUE)
             .addGroup(SupplierPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(SupplierPanelLayout.createSequentialGroup()
-                    .addGap(14, 14, 14)
-                    .addComponent(CurrentSupplierPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGap(14, 14, 14)))
+                .addComponent(CurrentSupplierPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         MainPanel.add(SupplierPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 110, 1030, 590));
-
-        ItemResultTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        ItemsScrollPane.setViewportView(ItemResultTable);
-
-        AddNewItemPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        AddNewItemPanel.setToolTipText("");
-
-        RestrictedLabelItem.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        RestrictedLabelItem.setText("Restricted");
-
-        InformationLabelItem.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        InformationLabelItem.setText("Information");
-
-        PriceLabelItem.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        PriceLabelItem.setText("Price");
-
-        CategoryLabelItem.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        CategoryLabelItem.setText("Category");
-
-        ItemNameLabelItem.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        ItemNameLabelItem.setText("Item Name");
-
-        ItemNameTextField.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-
-        CategoryComboBox.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        CategoryComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        PriceTextField.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-
-        InformationTextField.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-
-        RestrictedCheckBox.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-
-        SubHeaderLabelItem.setFont(new java.awt.Font("Segoe UI Symbol", 1, 18)); // NOI18N
-        SubHeaderLabelItem.setText("Add New Item");
-
-        AddItemButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        AddItemButton.setText("Add");
-
-        javax.swing.GroupLayout AddNewItemPanelLayout = new javax.swing.GroupLayout(AddNewItemPanel);
-        AddNewItemPanel.setLayout(AddNewItemPanelLayout);
-        AddNewItemPanelLayout.setHorizontalGroup(
-            AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(AddNewItemPanelLayout.createSequentialGroup()
-                .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(AddNewItemPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(SubHeaderLabelItem, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(AddNewItemPanelLayout.createSequentialGroup()
-                        .addGap(86, 86, 86)
-                        .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(ItemNameLabelItem)
-                            .addComponent(CategoryLabelItem)
-                            .addComponent(RestrictedLabelItem))
-                        .addGap(40, 40, 40)
-                        .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(AddNewItemPanelLayout.createSequentialGroup()
-                                .addComponent(RestrictedCheckBox)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(AddItemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(AddNewItemPanelLayout.createSequentialGroup()
-                                .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(CategoryComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(ItemNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(92, 92, 92)
-                                .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(PriceLabelItem)
-                                    .addComponent(InformationLabelItem))
-                                .addGap(35, 35, 35)
-                                .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(PriceTextField)
-                                    .addComponent(InformationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        AddNewItemPanelLayout.setVerticalGroup(
-            AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(AddNewItemPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(SubHeaderLabelItem, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(AddNewItemPanelLayout.createSequentialGroup()
-                        .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(ItemNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(ItemNameLabelItem))
-                        .addGap(18, 18, 18)
-                        .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(CategoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(CategoryLabelItem)))
-                    .addGroup(AddNewItemPanelLayout.createSequentialGroup()
-                        .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(PriceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(PriceLabelItem))
-                        .addGap(18, 18, 18)
-                        .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(InformationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(InformationLabelItem))))
-                .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(AddNewItemPanelLayout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(AddItemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(AddNewItemPanelLayout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(RestrictedLabelItem))
-                    .addGroup(AddNewItemPanelLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(RestrictedCheckBox)))
-                .addContainerGap(25, Short.MAX_VALUE))
-        );
-
-        SearchItemTextfieldItem.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        SearchItemTextfieldItem.setText("Search Item");
-        SearchItemTextfieldItem.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                SearchItemTextfieldItemMouseClicked(evt);
-            }
-        });
-        SearchItemTextfieldItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SearchItemTextfieldItemActionPerformed(evt);
-            }
-        });
-
-        SearchItemButtonItem.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        SearchItemButtonItem.setText("Search");
-
-        javax.swing.GroupLayout ItemPanelLayout = new javax.swing.GroupLayout(ItemPanel);
-        ItemPanel.setLayout(ItemPanelLayout);
-        ItemPanelLayout.setHorizontalGroup(
-            ItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ItemPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(ItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ItemsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 1010, Short.MAX_VALUE)
-                    .addComponent(AddNewItemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(ItemPanelLayout.createSequentialGroup()
-                        .addComponent(SearchItemTextfieldItem, javax.swing.GroupLayout.PREFERRED_SIZE, 850, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(SearchItemButtonItem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        ItemPanelLayout.setVerticalGroup(
-            ItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ItemPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(AddNewItemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(ItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(SearchItemTextfieldItem, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(SearchItemButtonItem, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ItemsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-
-        MainPanel.add(ItemPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 110, 1030, 590));
 
         SelectSiteLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         SelectSiteLabel.setText("Select Site");
@@ -496,10 +534,6 @@ public class ManagerDashBoard extends javax.swing.JFrame {
 
         SiteNameTextField.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
-        SiteAddressTextField.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-
-        SiteStorageCapacityTextField.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-
         SiteCurrentCapacityTextField.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         SiteManagerComboBox.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -510,12 +544,6 @@ public class ManagerDashBoard extends javax.swing.JFrame {
 
         SiteAddressLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         SiteAddressLabel.setText("Address");
-
-        SiteStorageCapacityLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        SiteStorageCapacityLabel.setText("Storage Capacity");
-
-        SiteCurrentCapacityLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        SiteCurrentCapacityLabel.setText("Current Capacity");
 
         SiteManagerLabel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         SiteManagerLabel.setText("Site Manager");
@@ -531,26 +559,22 @@ public class ManagerDashBoard extends javax.swing.JFrame {
         SiteAddUpdatePanelLayout.setHorizontalGroup(
             SiteAddUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(SiteAddUpdatePanelLayout.createSequentialGroup()
-                .addGap(92, 92, 92)
-                .addGroup(SiteAddUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(SiteAddUpdatePanelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 242, Short.MAX_VALUE)
+                .addGroup(SiteAddUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SiteAddUpdatePanelLayout.createSequentialGroup()
+                        .addContainerGap(334, Short.MAX_VALUE)
                         .addComponent(SiteUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(AddNewSiteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(SiteAddUpdatePanelLayout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SiteAddUpdatePanelLayout.createSequentialGroup()
+                        .addGap(92, 92, 92)
                         .addGroup(SiteAddUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(SiteNameLabel)
                             .addComponent(SiteAddressLabel)
-                            .addComponent(SiteStorageCapacityLabel)
-                            .addComponent(SiteCurrentCapacityLabel)
                             .addComponent(SiteManagerLabel))
-                        .addGap(60, 60, 60)
+                        .addGap(87, 87, 87)
                         .addGroup(SiteAddUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(SiteAddressTextField)
                             .addComponent(SiteNameTextField, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(SiteCurrentCapacityTextField)
-                            .addComponent(SiteStorageCapacityTextField)
                             .addComponent(SiteManagerComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(99, 99, 99))
             .addGroup(SiteAddUpdatePanelLayout.createSequentialGroup()
@@ -563,31 +587,23 @@ public class ManagerDashBoard extends javax.swing.JFrame {
             .addGroup(SiteAddUpdatePanelLayout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addComponent(AddUpdateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(52, 52, 52)
                 .addGroup(SiteAddUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(SiteNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(SiteNameLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addGroup(SiteAddUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(SiteCurrentCapacityTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(SiteAddressLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(SiteAddUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(SiteStorageCapacityTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(SiteStorageCapacityLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(SiteAddUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(SiteAddressTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(SiteCurrentCapacityLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addGroup(SiteAddUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(SiteManagerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(SiteManagerLabel))
-                .addGap(38, 38, 38)
+                .addGap(18, 18, 18)
                 .addGroup(SiteAddUpdatePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(SiteUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(AddNewSiteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(121, Short.MAX_VALUE))
+                .addContainerGap(185, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout CurrentSitePanelLayout = new javax.swing.GroupLayout(CurrentSitePanel);
@@ -700,7 +716,7 @@ public class ManagerDashBoard extends javax.swing.JFrame {
 
         MainPanel.add(ApprovelPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 110, 1030, 590));
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        ItemResultTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -711,11 +727,184 @@ public class ManagerDashBoard extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        ItemsScrollPane.setViewportView(ItemResultTable);
 
-        jTextField1.setText("jTextField1");
+        AddNewItemPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        AddNewItemPanel.setToolTipText("");
 
-        jButton1.setText("jButton1");
+        RestrictedLabelItem.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        RestrictedLabelItem.setText("Restricted");
+
+        InformationLabelItem.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        InformationLabelItem.setText("Information");
+
+        PriceLabelItem.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        PriceLabelItem.setText("Price");
+
+        CategoryLabelItem.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        CategoryLabelItem.setText("Category");
+
+        ItemNameLabelItem.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        ItemNameLabelItem.setText("Item Name");
+
+        ItemNameTextField.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+
+        CategoryComboBox.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        CategoryComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        CategoryComboBox.setMaximumSize(new java.awt.Dimension(78, 26));
+
+        PriceTextField.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+
+        InformationTextField.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+
+        RestrictedCheckBox.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+
+        SubHeaderLabelItem.setFont(new java.awt.Font("Segoe UI Symbol", 1, 18)); // NOI18N
+        SubHeaderLabelItem.setText("Add New Item");
+
+        AddItemButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        AddItemButton.setText("Add");
+        AddItemButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddItemButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout AddNewItemPanelLayout = new javax.swing.GroupLayout(AddNewItemPanel);
+        AddNewItemPanel.setLayout(AddNewItemPanelLayout);
+        AddNewItemPanelLayout.setHorizontalGroup(
+            AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(AddNewItemPanelLayout.createSequentialGroup()
+                .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(AddNewItemPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(SubHeaderLabelItem, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(AddNewItemPanelLayout.createSequentialGroup()
+                        .addGap(86, 86, 86)
+                        .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ItemNameLabelItem)
+                            .addComponent(CategoryLabelItem)
+                            .addComponent(RestrictedLabelItem))
+                        .addGap(40, 40, 40)
+                        .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(AddNewItemPanelLayout.createSequentialGroup()
+                                .addComponent(RestrictedCheckBox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(AddItemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(AddNewItemPanelLayout.createSequentialGroup()
+                                .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(ItemNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                                    .addComponent(CategoryComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
+                                .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(PriceLabelItem)
+                                    .addComponent(InformationLabelItem))
+                                .addGap(35, 35, 35)
+                                .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(PriceTextField)
+                                    .addComponent(InformationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addGap(90, 90, 90))
+        );
+        AddNewItemPanelLayout.setVerticalGroup(
+            AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(AddNewItemPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(SubHeaderLabelItem, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(AddNewItemPanelLayout.createSequentialGroup()
+                        .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(ItemNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ItemNameLabelItem))
+                        .addGap(18, 18, 18)
+                        .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(CategoryComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(CategoryLabelItem)))
+                    .addGroup(AddNewItemPanelLayout.createSequentialGroup()
+                        .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(PriceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(PriceLabelItem))
+                        .addGap(18, 18, 18)
+                        .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(InformationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(InformationLabelItem))))
+                .addGroup(AddNewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(AddNewItemPanelLayout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(AddItemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(AddNewItemPanelLayout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(RestrictedLabelItem))
+                    .addGroup(AddNewItemPanelLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(RestrictedCheckBox)))
+                .addContainerGap(25, Short.MAX_VALUE))
+        );
+
+        SearchItemTextfieldItem.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        SearchItemTextfieldItem.setText("Search Item");
+        SearchItemTextfieldItem.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                SearchItemTextfieldItemMouseClicked(evt);
+            }
+        });
+        SearchItemTextfieldItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SearchItemTextfieldItemActionPerformed(evt);
+            }
+        });
+
+        SearchItemButtonItem.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        SearchItemButtonItem.setText("Search");
+
+        javax.swing.GroupLayout ItemPanelLayout = new javax.swing.GroupLayout(ItemPanel);
+        ItemPanel.setLayout(ItemPanelLayout);
+        ItemPanelLayout.setHorizontalGroup(
+            ItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ItemPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(ItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ItemsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 1010, Short.MAX_VALUE)
+                    .addComponent(AddNewItemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(ItemPanelLayout.createSequentialGroup()
+                        .addComponent(SearchItemTextfieldItem, javax.swing.GroupLayout.PREFERRED_SIZE, 850, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(SearchItemButtonItem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        ItemPanelLayout.setVerticalGroup(
+            ItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ItemPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(AddNewItemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(ItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(SearchItemTextfieldItem, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SearchItemButtonItem, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ItemsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        MainPanel.add(ItemPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 110, 1030, 590));
+
+        EmployeeListTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(EmployeeListTable);
+
+        SearchEmployeeTextField.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+
+        SearchEmployeeButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        SearchEmployeeButton.setText("Search");
 
         javax.swing.GroupLayout EmployeePanelLayout = new javax.swing.GroupLayout(EmployeePanel);
         EmployeePanel.setLayout(EmployeePanelLayout);
@@ -726,9 +915,9 @@ public class ManagerDashBoard extends javax.swing.JFrame {
                 .addGroup(EmployeePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2)
                     .addGroup(EmployeePanelLayout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 850, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(SearchEmployeeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 850, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)))
+                        .addComponent(SearchEmployeeButton, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         EmployeePanelLayout.setVerticalGroup(
@@ -736,14 +925,27 @@ public class ManagerDashBoard extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, EmployeePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(EmployeePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField1)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE))
+                    .addComponent(SearchEmployeeTextField)
+                    .addComponent(SearchEmployeeButton, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         MainPanel.add(EmployeePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 110, 1030, 590));
+
+        javax.swing.GroupLayout PaymentPanelLayout = new javax.swing.GroupLayout(PaymentPanel);
+        PaymentPanel.setLayout(PaymentPanelLayout);
+        PaymentPanelLayout.setHorizontalGroup(
+            PaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1030, Short.MAX_VALUE)
+        );
+        PaymentPanelLayout.setVerticalGroup(
+            PaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 590, Short.MAX_VALUE)
+        );
+
+        MainPanel.add(PaymentPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(229, 110, 1030, 590));
 
         SubPanels.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -832,7 +1034,9 @@ public class ManagerDashBoard extends javax.swing.JFrame {
         });
         MainPanel.add(ApprovalButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 350, 165, 50));
 
-        getContentPane().add(MainPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1280, 720));
+        MainScrollPane.setViewportView(MainPanel);
+
+        getContentPane().add(MainScrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1290, 730));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -856,31 +1060,178 @@ public class ManagerDashBoard extends javax.swing.JFrame {
     private void SupplierButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SupplierButtonActionPerformed
         // TODO add your handling code here:
         changePanel(2);
+        loadSupplierList();
+        loadSelectSupplierComboBox();
     }//GEN-LAST:event_SupplierButtonActionPerformed
 
     private void SiteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SiteButtonActionPerformed
         // TODO add your handling code here:
         changePanel(4);
+        loadSiteList();
+        loadSiteManagerComboBox();
     }//GEN-LAST:event_SiteButtonActionPerformed
 
     private void ItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemButtonActionPerformed
         // TODO add your handling code here:
         changePanel(1);
+        loadItemResultTable();
+        loadItemCategoryComboBox();
     }//GEN-LAST:event_ItemButtonActionPerformed
 
     private void EmployeeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EmployeeButtonActionPerformed
         // TODO add your handling code here:
         changePanel(3);
+        loadEmployeeListTable();
     }//GEN-LAST:event_EmployeeButtonActionPerformed
 
     private void ApprovalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ApprovalButtonActionPerformed
         // TODO add your handling code here:
         changePanel(5);
+        loadApproveListTable();
     }//GEN-LAST:event_ApprovalButtonActionPerformed
 
     private void SetSupplierApproveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SetSupplierApproveButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_SetSupplierApproveButtonActionPerformed
+
+    private void AddNewSupplierButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddNewSupplierButtonActionPerformed
+        // TODO add your handling code here:
+        int countCheck=0;
+        try{
+            if(!this.SupplierNameTextField1.getText().isEmpty()){
+                countCheck++;
+                if(!this.SupplierAddressTextField.getText().isEmpty()){
+                    countCheck++;
+                    if(!this.SupplierAddressTextField.getText().isEmpty()){
+                        countCheck++;
+                        if(!this.SupplierBankNoTextField.getText().isEmpty() && 
+                                checkDigit(this.SupplierBankNoTextField.getText())){
+                            countCheck++;
+                            if(!this.SupplierEmailTextField.getText().isEmpty() && 
+                                    this.SupplierEmailTextField.getText().contains("@")){
+                                countCheck++;
+                                if(!this.SupplierPhoneNoTextField.getText().isEmpty()){
+                                    System.out.println(countCheck);
+                                    countCheck++;
+                                } else {
+                                    JOptionPane.showMessageDialog(this, "Provide Phone Number");
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog(this, "Provide Email Address");
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Provide Bank Number");
+                        } 
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Provide Address");
+                    } 
+                } else {
+                    JOptionPane.showMessageDialog(this, "Provide Address");
+                } 
+            } else {
+                JOptionPane.showMessageDialog(this, "Provide Name");
+            }
+            
+            if(countCheck == 5){
+                procurementFacade.addNewSupplier(this.SupplierNameTextField1.getText(), this.SupplierAddressTextField.getText(), 
+                        Integer.parseInt(this.SupplierPhoneNoTextField.getText()), this.SupplierEmailTextField.getText(), 
+                        Integer.parseInt(this.SupplierBankNoTextField.getText()));
+            }
+        }catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(this, "Invalid Format", "Warnig", JOptionPane.WARNING_MESSAGE);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        
+    }//GEN-LAST:event_AddNewSupplierButtonActionPerformed
+
+    private void AddItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddItemButtonActionPerformed
+        // TODO add your handling code here:
+        boolean check = false;
+        try{
+            if(this.ItemNameTextField.getText().isEmpty()){
+                JOptionPane.showMessageDialog(this, "Enter Item Name");
+            } else if(this.PriceTextField.getText().isEmpty() && checkDigit(this.PriceTextField.getText())){
+                JOptionPane.showMessageDialog(this, "Enter valid price");
+            } else {
+                check = true;
+            }
+            
+            if(check) {
+            procurementFacade.postNewItem(this.ItemNameTextField.getText(),
+                    Float.parseFloat(this.PriceTextField.getText()),
+                            this.SelectSupplierComboBoxApproval.getSelectedItem().toString());
+            }
+        } catch(NullPointerException e){
+            JOptionPane.showMessageDialog(this, "Fill the requirements");
+        } catch(NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Provide corrent details");
+        }
+        
+    }//GEN-LAST:event_AddItemButtonActionPerformed
+
+    private void SupplierUpdateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SupplierUpdateButtonActionPerformed
+        // TODO add your handling code here:
+                int countCheck=0;
+        try{
+            
+            if(this.supplierSelect != -1 ){
+                countCheck++;
+                if(!this.SupplierNameTextField1.getText().isEmpty()){
+                    countCheck++;
+                    if(!this.SupplierAddressTextField.getText().isEmpty()){
+                        countCheck++;
+                        if(!this.SupplierAddressTextField.getText().isEmpty()){
+                            countCheck++;
+                            if(!this.SupplierBankNoTextField.getText().isEmpty() && 
+                                    checkDigit(this.SupplierBankNoTextField.getText())){
+                                countCheck++;
+                                if(!this.SupplierEmailTextField.getText().isEmpty() && 
+                                        this.SupplierEmailTextField.getText().contains("@")){
+                                    countCheck++;
+                                    if(!this.SupplierPhoneNoTextField.getText().isEmpty()){
+                                        System.out.println(countCheck);
+                                        countCheck++;
+                                    } else {
+                                        JOptionPane.showMessageDialog(this, "Provide Phone Number");
+                                    }
+                                } else {
+                                    JOptionPane.showMessageDialog(this, "Provide Email Address");
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog(this, "Provide Bank Number");
+                            } 
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Provide Address");
+                        } 
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Provide Address");
+                    } 
+                } else {
+                    JOptionPane.showMessageDialog(this, "Provide Name");
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Select Supplier");
+            }
+            
+            if(countCheck == 6){
+                procurementFacade.addNewSupplier(this.SupplierNameTextField1.getText(), this.SupplierAddressTextField.getText(), 
+                        Integer.parseInt(this.SupplierPhoneNoTextField.getText()), this.SupplierEmailTextField.getText(), 
+                        Integer.parseInt(this.SupplierBankNoTextField.getText()));
+            }
+        }catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(this, "Invalid Format", "Warnig", JOptionPane.WARNING_MESSAGE);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_SupplierUpdateButtonActionPerformed
+
+    private void SupplierListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_SupplierListValueChanged
+        // TODO add your handling code here:
+        System.out.println(this.supplierSelect);
+        this.supplierSelect = this.SupplierList.getSelectedIndex();
+        System.out.println(this.supplierSelect);
+    }//GEN-LAST:event_SupplierListValueChanged
 
     /**
      * @param args the command line arguments
@@ -1000,6 +1351,7 @@ public class ManagerDashBoard extends javax.swing.JFrame {
     private javax.swing.JPanel CurrentSitePanel;
     private javax.swing.JPanel CurrentSupplierPanel;
     private javax.swing.JButton EmployeeButton;
+    private javax.swing.JTable EmployeeListTable;
     private javax.swing.JPanel EmployeePanel;
     private javax.swing.JLabel HeaderLabel;
     private javax.swing.JPanel HeaderPanel;
@@ -1012,6 +1364,7 @@ public class ManagerDashBoard extends javax.swing.JFrame {
     private javax.swing.JTable ItemResultTable;
     private javax.swing.JScrollPane ItemsScrollPane;
     private javax.swing.JPanel MainPanel;
+    private javax.swing.JScrollPane MainScrollPane;
     private javax.swing.JTabbedPane ManagementTabber;
     private javax.swing.JButton PaymentButton;
     private javax.swing.JPanel PaymentPanel;
@@ -1021,6 +1374,8 @@ public class ManagerDashBoard extends javax.swing.JFrame {
     private javax.swing.JTextField PriceTextField;
     private javax.swing.JCheckBox RestrictedCheckBox;
     private javax.swing.JLabel RestrictedLabelItem;
+    private javax.swing.JButton SearchEmployeeButton;
+    private javax.swing.JTextField SearchEmployeeTextField;
     private javax.swing.JButton SearchItemButtonItem;
     private javax.swing.JTextField SearchItemTextfieldItem;
     private javax.swing.JLabel SelectSiteLabel;
@@ -1030,9 +1385,7 @@ public class ManagerDashBoard extends javax.swing.JFrame {
     private javax.swing.JButton SetSupplierApproveButton;
     private javax.swing.JPanel SiteAddUpdatePanel;
     private javax.swing.JLabel SiteAddressLabel;
-    private javax.swing.JTextField SiteAddressTextField;
     private javax.swing.JButton SiteButton;
-    private javax.swing.JLabel SiteCurrentCapacityLabel;
     private javax.swing.JTextField SiteCurrentCapacityTextField;
     private javax.swing.JList<String> SiteList;
     private javax.swing.JComboBox<String> SiteManagerComboBox;
@@ -1040,8 +1393,6 @@ public class ManagerDashBoard extends javax.swing.JFrame {
     private javax.swing.JLabel SiteNameLabel;
     private javax.swing.JTextField SiteNameTextField;
     private javax.swing.JPanel SitePanel;
-    private javax.swing.JLabel SiteStorageCapacityLabel;
-    private javax.swing.JTextField SiteStorageCapacityTextField;
     private javax.swing.JButton SiteUpdateButton;
     private javax.swing.JLabel SubHeaderLabelItem;
     private javax.swing.JLayeredPane SubPanels;
@@ -1061,12 +1412,9 @@ public class ManagerDashBoard extends javax.swing.JFrame {
     private javax.swing.JLabel SupplierPhoneLabel;
     private javax.swing.JTextField SupplierPhoneNoTextField;
     private javax.swing.JButton SupplierUpdateButton;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }

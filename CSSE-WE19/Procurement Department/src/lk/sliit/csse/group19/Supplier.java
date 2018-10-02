@@ -5,6 +5,8 @@
  */
 package lk.sliit.csse.group19;
 
+import org.json.JSONObject;
+
 /**
  *
  * @author Muhammed Suhail
@@ -27,6 +29,14 @@ public class Supplier {
         this.supplierBankACCNo = supplierBankACCNo;
     }
 
+    public Supplier(String supplierName, String supplierAddress, int supplierPhoneNo, String supplierEmail, int supplierBankACCNo) {
+        this.supplierName = supplierName;
+        this.supplierAddress = supplierAddress;
+        this.supplierPhoneNo = supplierPhoneNo;
+        this.supplierEmail = supplierEmail;
+        this.supplierBankACCNo = supplierBankACCNo;
+    }
+    
     public Supplier() {
     }
 
@@ -78,5 +88,25 @@ public class Supplier {
         this.supplierBankACCNo = supplierBankACCNo;
     }
     
+        public void addNewSupplier(){
+        JSONObject obj = new JSONObject();
+        obj.put("supplierName", this.supplierName);
+        obj.put("supplierAddress", this.supplierAddress);
+        obj.put("supplierBankACCNo", this.supplierBankACCNo);
+        obj.put("supplierEmail", this.supplierEmail);
+        obj.put("supplierPhoneNo", this.supplierPhoneNo);
+        
+        new API("https://jsonplaceholder.typicode.com/posts/1").postValue(obj);
+    }
     
+    public void updateSupplierDetails(){
+        JSONObject obj = new JSONObject();
+        obj.put("supplierName", this.supplierName);
+        obj.put("supplierAddress", this.supplierAddress);
+        obj.put("supplierBankACCNo", this.supplierBankACCNo);
+        obj.put("supplierEmail", this.supplierEmail);
+        obj.put("supplierPhoneNo", this.supplierPhoneNo);
+        
+        new API("https://jsonplaceholder.typicode.com/posts/"+Integer.toString(this.supplierID)).updateValue(obj);
+    }
 }
