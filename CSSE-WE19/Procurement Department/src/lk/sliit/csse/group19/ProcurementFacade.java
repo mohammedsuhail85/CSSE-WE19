@@ -28,13 +28,17 @@ public class ProcurementFacade {
         new API(url).postValue(data);
     }
     
+    public JSONObject getSingleValue(String url) {
+        return new API(url).getSingleValue();
+    }
+    
     //Item Add new item and Update
     public void postNewItem(String name, float price, String category) {
         new Item(name, price, category).postItem();
     }
     
-    public void setApproveOrder(int purchaseId, String status, String sitemanagerId, int supplierId){
-        new PurchaseOrder(purchaseId, sitemanagerId, status, supplierId).setApproveOrder();
+    public String setApproveOrder(int purchaseId, String status, String sitemanagerId, int supplierId){
+        return new PurchaseOrder(purchaseId, sitemanagerId, status, supplierId).setApproveOrder();
     }
     
     //Add new site and Update existing site's details
@@ -47,11 +51,15 @@ public class ProcurementFacade {
     }
     
     //Add new Supplier and update existing supplier's detatils
-    public void addNewSupplier(String supplierName, String supplierAddress, int supplierPhoneNo, String supplierEmail, int supplierBankACCNo){
-        new Supplier(supplierName, supplierAddress, supplierPhoneNo, supplierEmail, supplierBankACCNo).addNewSupplier();
+    public String addNewSupplier(String supplierName, String supplierAddress, int supplierPhoneNo, String supplierEmail, int supplierBankACCNo){
+        return new Supplier(supplierName, supplierAddress, supplierPhoneNo, supplierEmail, supplierBankACCNo).addNewSupplier();
     }
     
-    public void updateSupplierDetails(int supplierID, String supplierName, String supplierAddress, int supplierPhoneNo, String supplierEmail, int supplierBankACCNo){
-        new Supplier(supplierID, supplierName, supplierAddress, supplierPhoneNo, supplierEmail, supplierBankACCNo).updateSupplierDetails();
+    public String updateSupplierDetails(int supplierID, String supplierName, String supplierAddress, int supplierPhoneNo, String supplierEmail, int supplierBankACCNo){
+        return new Supplier(supplierID, supplierName, supplierAddress, supplierPhoneNo, supplierEmail, supplierBankACCNo).updateSupplierDetails();
+    }
+    
+    public AuthorizedEmployee getUser(String userName, String password){
+        return new AuthorizedEmployee(userName, password).getUser();
     }
 }

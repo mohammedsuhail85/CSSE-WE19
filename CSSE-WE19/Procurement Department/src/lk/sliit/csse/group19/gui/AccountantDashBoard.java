@@ -6,8 +6,15 @@
 package lk.sliit.csse.group19.gui;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.table.DefaultTableModel;
+import lk.sliit.csse.group19.AuthorizedEmployee;
+import lk.sliit.csse.group19.ProcurementFacade;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 /**
  *
@@ -21,17 +28,41 @@ public class AccountantDashBoard extends javax.swing.JFrame {
     private static boolean status = false;
     private String purchaseId = null;
     private int sumQty = 0;
+    private String purcaseOrderID = null;
+    private int ReciptID = -1;
     
+    ProcurementFacade procurementFacade = new ProcurementFacade();
+    Object loggedUser = null;
     
     public AccountantDashBoard() {
         initComponents();
         this.setLocationRelativeTo(null);
         checkStatus();
         loadReciptList();
+        UpdatePurchaseListTable();
         this.StatusOfMakePaymentLabel.setText(Boolean.toString(status));
         
     }
-
+    
+    public AccountantDashBoard(AuthorizedEmployee user) {
+        initComponents();
+        this.loggedUser = user;
+        this.setLocationRelativeTo(null);
+        checkStatus();
+        loadReciptList();
+        UpdatePurchaseListTable();
+        this.StatusOfMakePaymentLabel.setText(Boolean.toString(status));
+        
+    }
+    
+    @Override
+    public void dispose() {
+        System.out.println("Closed");
+        super.dispose();
+        Login login = new Login();
+        login.setVisible(true);
+    }
+    
     private void checkStatus() {
         if(status == false) {
             this.MakePaymentButton.setEnabled(false);
@@ -53,37 +84,53 @@ public class AccountantDashBoard extends javax.swing.JFrame {
     }
     
     private void UpdatePurchaseListTable() {
-        DefaultTableModel table = (DefaultTableModel)this.PurchaseListTable.getModel();
-//        if(table.getRowCount()!=0){
-//            while(table.getRowCount()!=0){
-//                table.removeRow(0);
-//            }
-//        }
-//        try {
-//            ResultSet RS = IM.getResult("item");
-//            while(RS.next()) {
-//                table.addRow(new Object[]{RS.getString("ItemName"),RS.getString("IID")});
-//            }
-//        }
-//        catch(SQLException e) {
-//        }
+        try {
+            DefaultTableModel table = (DefaultTableModel) this.PurchaseListTable.getModel();
+            if (table.getRowCount() != 0) {
+                while (table.getRowCount() != 0) {
+                    table.removeRow(0);
+                }
+            }
+            Thread th = new Thread() {
+                public void run() {
+                    JSONArray arr = procurementFacade.getValues("https://jsonplaceholder.typicode.com/posts/");
+
+                    for (int x = 0; x < arr.length(); x++) {
+                        //            System.out.println(arr.getJSONObject(x).toString());
+                        table.addRow(new Object[]{arr.getJSONObject(x).getInt("id"), arr.getJSONObject(x).getString("title"),
+                            arr.getJSONObject(x).getInt("userId"), arr.getJSONObject(x).getString("body")});
+                    }
+                }
+            };
+            th.start();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
     
         private void UpdateReciptListTable() {
-        DefaultTableModel table = (DefaultTableModel)this.ReciptItemListTable.getModel();
-//        if(table.getRowCount()!=0){
-//            while(table.getRowCount()!=0){
-//                table.removeRow(0);
-//            }
-//        }
-//        try {
-//            ResultSet RS = IM.getResult("item");
-//            while(RS.next()) {
-//                table.addRow(new Object[]{RS.getString("ItemName"),RS.getString("IID")});
-//            }
-//        }
-//        catch(SQLException e) {
-//        }
+        try {
+            DefaultTableModel table = (DefaultTableModel) this.ReciptItemListTable.getModel();
+            if (table.getRowCount() != 0) {
+                while (table.getRowCount() != 0) {
+                    table.removeRow(0);
+                }
+            }
+            Thread th = new Thread() {
+                public void run() {
+                    JSONArray arr = procurementFacade.getValues("https://jsonplaceholder.typicode.com/posts/");
+
+                    for (int x = 0; x < arr.length(); x++) {
+                        //            System.out.println(arr.getJSONObject(x).toString());
+                        table.addRow(new Object[]{arr.getJSONObject(x).getInt("id"), arr.getJSONObject(x).getString("title"),
+                            arr.getJSONObject(x).getInt("userId"), arr.getJSONObject(x).getString("body")});
+                    }
+                }
+            };
+            th.start();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
     
     /**
@@ -112,7 +159,7 @@ public class AccountantDashBoard extends javax.swing.JFrame {
         DisplayStatusLabel = new javax.swing.JLabel();
         StatusOfMakePaymentLabel = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         PurchaseListSelectionPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         PurchaseListSelectionPanel.setDoubleBuffered(false);
@@ -145,6 +192,11 @@ public class AccountantDashBoard extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        PurchaseListTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                PurchaseListTableMouseClicked(evt);
             }
         });
         jScrollPane2.setViewportView(PurchaseListTable);
@@ -187,6 +239,11 @@ public class AccountantDashBoard extends javax.swing.JFrame {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
+        });
+        ReciptList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                ReciptListValueChanged(evt);
+            }
         });
         jScrollPane1.setViewportView(ReciptList);
 
@@ -310,6 +367,65 @@ public class AccountantDashBoard extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.purchaseId = this.SelectPurchaseListComboBox.getSelectedItem().toString();
     }//GEN-LAST:event_SelectPurchaseListComboBoxActionPerformed
+
+    private void PurchaseListTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PurchaseListTableMouseClicked
+        // TODO add your handling code here:
+        this.ReciptList.removeAll();
+        DefaultListModel<String> model = new DefaultListModel<>();
+
+        Thread th = new Thread() {
+            public void run() {
+                try {
+                    JSONArray arr = procurementFacade.getValues("https://jsonplaceholder.typicode.com/posts");
+
+                    for (int x = 0; x < arr.length(); x++) {
+//                        System.out.println(arr.getJSONObject(x).toString());
+                        model.addElement(Integer.toString(arr.getJSONObject(x).getInt("id")));
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    try {
+                        e.wait(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(ManagerDashBoard.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        };
+        th.start();
+
+        this.ReciptList.setModel(model);
+    }//GEN-LAST:event_PurchaseListTableMouseClicked
+
+    private void ReciptListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_ReciptListValueChanged
+        // TODO add your handling code here:
+        System.out.println(this.ReciptID);
+        if (this.ReciptID != -1) {
+            try {
+                DefaultTableModel table = (DefaultTableModel) this.ReciptItemListTable.getModel();
+                if (table.getRowCount() != 0) {
+                    while (table.getRowCount() != 0) {
+                        table.removeRow(0);
+                    }
+                }
+                Thread th = new Thread() {
+                    public void run() {
+                        JSONArray arr = procurementFacade.getValues("https://jsonplaceholder.typicode.com/posts/");
+
+                        for (int x = 0; x < arr.length(); x++) {
+                            //            System.out.println(arr.getJSONObject(x).toString());
+                            table.addRow(new Object[]{arr.getJSONObject(x).getInt("id"), arr.getJSONObject(x).getString("title"),
+                                arr.getJSONObject(x).getInt("userId"), arr.getJSONObject(x).getString("body")});
+                        }
+                    }
+                };
+                th.start();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        this.ReciptID = this.ReciptList.getSelectedIndex() + 1;
+        System.out.println(this.ReciptID);
+    }//GEN-LAST:event_ReciptListValueChanged
 
     /**
      * @param args the command line arguments

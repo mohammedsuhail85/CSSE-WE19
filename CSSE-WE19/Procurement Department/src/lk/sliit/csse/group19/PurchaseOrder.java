@@ -110,12 +110,12 @@ public class PurchaseOrder {
         this.ExpectedDate = ExpectedDate;
     }
     
-    public void setApproveOrder(){
+    public String setApproveOrder(){
         JSONObject order = new JSONObject();
         order.put("purchaseStatus", this.purchaseStatus);
         order.put("managerID", this.siteManager);
         order.put("supplierID", this.supplierID);
-        new API(""+Integer.toString(this.purchaseID)).updateValue(order);
+        return new API(""+Integer.toString(this.purchaseID)).updateValue(order);
     }
     
 }

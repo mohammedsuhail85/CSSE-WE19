@@ -31,6 +31,12 @@ public class StaffDashboard extends javax.swing.JFrame {
     private void initComponents() {
 
         MainPanel = new javax.swing.JPanel();
+        ApprovelPanel = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        ApprovelListTable = new javax.swing.JTable();
+        SelectSupplierLabelApproval = new javax.swing.JLabel();
+        SelectSupplierComboBoxApproval = new javax.swing.JComboBox<>();
+        SetSupplierApproveButton = new javax.swing.JButton();
         SitePanel = new javax.swing.JPanel();
         CurrentSitePanel = new javax.swing.JPanel();
         SelectSiteLabel = new javax.swing.JLabel();
@@ -83,12 +89,6 @@ public class StaffDashboard extends javax.swing.JFrame {
         AddItemButton = new javax.swing.JButton();
         SearchItemTextfieldItem = new javax.swing.JTextField();
         SearchItemButtonItem = new javax.swing.JButton();
-        ApprovelPanel = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        ApprovelListTable = new javax.swing.JTable();
-        SelectSupplierLabelApproval = new javax.swing.JLabel();
-        SelectSupplierComboBoxApproval = new javax.swing.JComboBox<>();
-        SetSupplierApproveButton = new javax.swing.JButton();
         SubPanels = new javax.swing.JLayeredPane();
         PaymentTabber = new javax.swing.JTabbedPane();
         SuccessfulPaymentTabber = new javax.swing.JTabbedPane();
@@ -110,6 +110,67 @@ public class StaffDashboard extends javax.swing.JFrame {
         MainPanel.setMinimumSize(new java.awt.Dimension(1280, 720));
         MainPanel.setPreferredSize(new java.awt.Dimension(1280, 720));
         MainPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        ApprovelListTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(ApprovelListTable);
+
+        SelectSupplierLabelApproval.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        SelectSupplierLabelApproval.setText("Select Supplier");
+
+        SelectSupplierComboBoxApproval.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        SelectSupplierComboBoxApproval.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        SetSupplierApproveButton.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        SetSupplierApproveButton.setText("Set Suppiler and Approve");
+        SetSupplierApproveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SetSupplierApproveButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout ApprovelPanelLayout = new javax.swing.GroupLayout(ApprovelPanel);
+        ApprovelPanel.setLayout(ApprovelPanelLayout);
+        ApprovelPanelLayout.setHorizontalGroup(
+            ApprovelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ApprovelPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1010, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(ApprovelPanelLayout.createSequentialGroup()
+                .addGap(326, 326, 326)
+                .addGroup(ApprovelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(SetSupplierApproveButton)
+                    .addGroup(ApprovelPanelLayout.createSequentialGroup()
+                        .addComponent(SelectSupplierLabelApproval)
+                        .addGap(18, 18, 18)
+                        .addComponent(SelectSupplierComboBoxApproval, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        ApprovelPanelLayout.setVerticalGroup(
+            ApprovelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ApprovelPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36)
+                .addGroup(ApprovelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(SelectSupplierComboBoxApproval, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SelectSupplierLabelApproval))
+                .addGap(18, 18, 18)
+                .addComponent(SetSupplierApproveButton)
+                .addContainerGap(43, Short.MAX_VALUE))
+        );
+
+        MainPanel.add(ApprovelPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 110, 1030, 590));
 
         SelectSiteLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         SelectSiteLabel.setText("Select Site");
@@ -573,67 +634,6 @@ public class StaffDashboard extends javax.swing.JFrame {
         );
 
         MainPanel.add(ItemPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 110, 1030, 590));
-
-        ApprovelListTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane2.setViewportView(ApprovelListTable);
-
-        SelectSupplierLabelApproval.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        SelectSupplierLabelApproval.setText("Select Supplier");
-
-        SelectSupplierComboBoxApproval.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        SelectSupplierComboBoxApproval.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        SetSupplierApproveButton.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
-        SetSupplierApproveButton.setText("Set Suppiler and Approve");
-        SetSupplierApproveButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SetSupplierApproveButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout ApprovelPanelLayout = new javax.swing.GroupLayout(ApprovelPanel);
-        ApprovelPanel.setLayout(ApprovelPanelLayout);
-        ApprovelPanelLayout.setHorizontalGroup(
-            ApprovelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ApprovelPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1010, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(ApprovelPanelLayout.createSequentialGroup()
-                .addGap(326, 326, 326)
-                .addGroup(ApprovelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(SetSupplierApproveButton)
-                    .addGroup(ApprovelPanelLayout.createSequentialGroup()
-                        .addComponent(SelectSupplierLabelApproval)
-                        .addGap(18, 18, 18)
-                        .addComponent(SelectSupplierComboBoxApproval, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        ApprovelPanelLayout.setVerticalGroup(
-            ApprovelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ApprovelPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36)
-                .addGroup(ApprovelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(SelectSupplierComboBoxApproval, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(SelectSupplierLabelApproval))
-                .addGap(18, 18, 18)
-                .addComponent(SetSupplierApproveButton)
-                .addContainerGap(43, Short.MAX_VALUE))
-        );
-
-        MainPanel.add(ApprovelPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 110, 1030, 590));
 
         SubPanels.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
