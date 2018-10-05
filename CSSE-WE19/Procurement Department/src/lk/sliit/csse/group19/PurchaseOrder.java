@@ -6,6 +6,7 @@
 package lk.sliit.csse.group19;
 
 import java.util.Date;
+import org.json.JSONObject;
 
 /**
  *
@@ -36,6 +37,15 @@ public class PurchaseOrder {
         this.ExpectedDate = ExpectedDate;
     }
 
+    public PurchaseOrder(int purchaseID, String siteManager, String purchaseStatus, int supplierID) {
+        this.purchaseID = purchaseID;
+        this.siteManager = siteManager;
+        this.purchaseStatus = purchaseStatus;
+        this.supplierID = supplierID;
+    }
+
+    
+    
     public int getPurchaseID() {
         return purchaseID;
     }
@@ -100,6 +110,12 @@ public class PurchaseOrder {
         this.ExpectedDate = ExpectedDate;
     }
     
-    
+    public String setApproveOrder(){
+        JSONObject order = new JSONObject();
+        order.put("purchaseStatus", this.purchaseStatus);
+        order.put("managerID", this.siteManager);
+        order.put("supplierID", this.supplierID);
+        return new API(""+Integer.toString(this.purchaseID)).updateValue(order);
+    }
     
 }

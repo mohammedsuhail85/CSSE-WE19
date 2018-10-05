@@ -5,6 +5,9 @@
  */
 package lk.sliit.csse.group19;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 /**
  *
  * @author Muhammed Suhail
@@ -16,6 +19,7 @@ public class Item {
     private float price;
     private Policy itemPolicy;
     private int quantity;
+    private String category;
 
     public Item(int itemId, String decription, float price, Policy itemPolicy, int quantity) {
         this.itemId = itemId;
@@ -23,6 +27,12 @@ public class Item {
         this.price = price;
         this.itemPolicy = itemPolicy;
         this.quantity = quantity;
+    }
+
+    public Item(String decription, float price, String category) {
+        this.decription = decription;
+        this.price = price;
+        this.category = category;
     }
 
     public int getItemId() {
@@ -64,6 +74,15 @@ public class Item {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-
     
+    public void postItem(){
+        JSONObject obj = new JSONObject();
+        obj.put("name", this.decription);
+        obj.put("price", Float.toString(this.price));
+        obj.put("category", this.category);
+        
+        System.out.println("Item object goin to post");
+        new API("").postValue(obj);
+    }
+
 }
