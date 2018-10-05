@@ -111,11 +111,19 @@ public class PurchaseOrder {
     }
     
     public String setApproveOrder(){
-        JSONObject order = new JSONObject();
-        order.put("purchaseStatus", this.purchaseStatus);
-        order.put("managerID", this.siteManager);
-        order.put("supplierID", this.supplierID);
-        return new API(""+Integer.toString(this.purchaseID)).updateValue(order);
+        JSONObject order = new API("http://localhost:9000/purchaseOrders/"+Integer.toString(this.purchaseID)).getSingleValue();
+        JSONObject manager = order.getJSONObject("manager");
+//        System.out.println(order.toString());
+//        System.out.println(manager.toString());
+        if(this.purchaseStatus.equalsIgnoreCase("Approved")){
+            order.put("status", "MANAGER_APPROVED");
+        } else if(this.purchaseStatus.equalsIgnoreCase("Declined")){
+            order.put("status", "MANAGER_DICLINED");
+        }
+        manager.put("id", this.siteManager);
+        order.put("supplierId", this.supplierID);
+        System.out.println(order.toString());
+        return new API("http://localhost:9000/purchaseOrders/"+Integer.toString(this.purchaseID)).updateValue(order);
     }
     
 }

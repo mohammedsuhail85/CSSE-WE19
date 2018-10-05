@@ -30,31 +30,32 @@ public class AccountantDashBoard extends javax.swing.JFrame {
     private int sumQty = 0;
     private String purcaseOrderID = null;
     private int ReciptID = -1;
-    
+
     ProcurementFacade procurementFacade = new ProcurementFacade();
     Object loggedUser = null;
-    
+
     public AccountantDashBoard() {
         initComponents();
         this.setLocationRelativeTo(null);
         checkStatus();
         loadReciptList();
         UpdatePurchaseListTable();
+        loadSelectPurchaseListComboBox();
         this.StatusOfMakePaymentLabel.setText(Boolean.toString(status));
-        
+
     }
-    
+
     public AccountantDashBoard(AuthorizedEmployee user) {
         initComponents();
         this.loggedUser = user;
         this.setLocationRelativeTo(null);
         checkStatus();
         loadReciptList();
-        UpdatePurchaseListTable();
+        loadSelectPurchaseListComboBox();
         this.StatusOfMakePaymentLabel.setText(Boolean.toString(status));
-        
+
     }
-    
+
     @Override
     public void dispose() {
         System.out.println("Closed");
@@ -62,27 +63,42 @@ public class AccountantDashBoard extends javax.swing.JFrame {
         Login login = new Login();
         login.setVisible(true);
     }
-    
+
     private void checkStatus() {
-        if(status == false) {
+        if (status == false) {
             this.MakePaymentButton.setEnabled(false);
-        } else if(status == true) {
+        } else if (status == true) {
             this.MakePaymentButton.setEnabled(true);
         }
     }
-    
+
     private void loadReciptList() {
         this.ReciptList.removeAll();
-        ArrayList<String> reciptList = new ArrayList<>();
-        reciptList.add("hi");
-        reciptList.add("hello");
         DefaultListModel<String> model = new DefaultListModel<>();
-        for(String element: reciptList){
-            model.addElement(element);
-        }
+
+        Thread th = new Thread() {
+            public void run() {
+                try {
+                    JSONArray arr = procurementFacade.getValues("http://localhost:9000/suppliers");
+
+                    for (int x = 0; x < arr.length(); x++) {
+//                        System.out.println(arr.getJSONObject(x).toString());
+                        model.addElement((String) arr.getJSONObject(x).get("name") + " - " + (String) arr.getJSONObject(x).get("address"));
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    try {
+                        e.wait(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(ManagerDashBoard.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        };
+        th.start();
+
         this.ReciptList.setModel(model);
     }
-    
+
     private void UpdatePurchaseListTable() {
         try {
             DefaultTableModel table = (DefaultTableModel) this.PurchaseListTable.getModel();
@@ -107,8 +123,8 @@ public class AccountantDashBoard extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    
-        private void UpdateReciptListTable() {
+
+    private void UpdateReciptListTable() {
         try {
             DefaultTableModel table = (DefaultTableModel) this.ReciptItemListTable.getModel();
             if (table.getRowCount() != 0) {
@@ -132,7 +148,34 @@ public class AccountantDashBoard extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    
+
+    private void loadSelectPurchaseListComboBox() {
+        this.SelectPurchaseListComboBox.removeAllItems();
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+
+        Thread th = new Thread() {
+            public void run() {
+                try {
+                    JSONArray arr = procurementFacade.getValues("http://localhost:9000/purchaseOrders");
+
+                    for (int x = 0; x < arr.length(); x++) {
+                        //            System.out.println(arr.getJSONObject(x).toString());
+                        model.addElement(arr.getJSONObject(x).get("id")+" - "+arr.getJSONObject(x).getString("status"));
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    try {
+                        e.wait(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(ManagerDashBoard.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        };
+        th.start();
+
+        this.SelectPurchaseListComboBox.setModel(model);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -161,18 +204,20 @@ public class AccountantDashBoard extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        PurchaseListSelectionPanel.setBackground(new java.awt.Color(0, 0, 126));
         PurchaseListSelectionPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         PurchaseListSelectionPanel.setDoubleBuffered(false);
 
         SelectPurchaseListComboBox.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         SelectPurchaseListComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        SelectPurchaseListComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SelectPurchaseListComboBoxActionPerformed(evt);
+        SelectPurchaseListComboBox.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                SelectPurchaseListComboBoxPropertyChange(evt);
             }
         });
 
         SelectPurchseListLabel.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        SelectPurchseListLabel.setForeground(new java.awt.Color(255, 255, 255));
         SelectPurchseListLabel.setText("Select Purchese Order");
 
         PurchaseListTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -233,6 +278,7 @@ public class AccountantDashBoard extends javax.swing.JFrame {
                 .addContainerGap(46, Short.MAX_VALUE))
         );
 
+        ItemReciptPanel.setBackground(new java.awt.Color(0, 0, 126));
         ItemReciptPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         ReciptList.setModel(new javax.swing.AbstractListModel<String>() {
@@ -275,18 +321,22 @@ public class AccountantDashBoard extends javax.swing.JFrame {
         }
 
         SelectItemReciptLabel.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        SelectItemReciptLabel.setForeground(new java.awt.Color(255, 255, 255));
         SelectItemReciptLabel.setText("Select item Recipt");
 
         ItemReceivedLabel.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        ItemReceivedLabel.setForeground(new java.awt.Color(255, 255, 255));
         ItemReceivedLabel.setText("Item Received");
 
         MakePaymentButton.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         MakePaymentButton.setText("Make Payment");
 
         DisplayStatusLabel.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        DisplayStatusLabel.setForeground(new java.awt.Color(255, 255, 255));
         DisplayStatusLabel.setText("Status");
 
         StatusOfMakePaymentLabel.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        StatusOfMakePaymentLabel.setForeground(new java.awt.Color(255, 255, 255));
         StatusOfMakePaymentLabel.setText("Null");
 
         javax.swing.GroupLayout ItemReciptPanelLayout = new javax.swing.GroupLayout(ItemReciptPanel);
@@ -363,11 +413,6 @@ public class AccountantDashBoard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void SelectPurchaseListComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectPurchaseListComboBoxActionPerformed
-        // TODO add your handling code here:
-        this.purchaseId = this.SelectPurchaseListComboBox.getSelectedItem().toString();
-    }//GEN-LAST:event_SelectPurchaseListComboBoxActionPerformed
-
     private void PurchaseListTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PurchaseListTableMouseClicked
         // TODO add your handling code here:
         this.ReciptList.removeAll();
@@ -426,6 +471,10 @@ public class AccountantDashBoard extends javax.swing.JFrame {
         this.ReciptID = this.ReciptList.getSelectedIndex() + 1;
         System.out.println(this.ReciptID);
     }//GEN-LAST:event_ReciptListValueChanged
+
+    private void SelectPurchaseListComboBoxPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_SelectPurchaseListComboBoxPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_SelectPurchaseListComboBoxPropertyChange
 
     /**
      * @param args the command line arguments

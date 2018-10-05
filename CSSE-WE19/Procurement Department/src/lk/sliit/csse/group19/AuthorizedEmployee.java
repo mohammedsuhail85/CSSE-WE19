@@ -35,8 +35,6 @@ public class AuthorizedEmployee {
         this.empPhone = empPhone;
     }
     
-    
-
     public AuthorizedEmployee() {
     }
 

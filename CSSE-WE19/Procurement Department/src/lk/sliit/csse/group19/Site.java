@@ -65,20 +65,20 @@ public class Site {
  
     public void addNewSite(){
         JSONObject obj = new JSONObject();
-        obj.put("siteName", this.siteName);
-        obj.put("siteAddress", this.siteAddress);
-        obj.put("siteAddress", this.siteManager);
-        
-        new API("").postValue(obj);
+        obj.put("name", this.siteName);
+        obj.put("address", this.siteAddress);
+        //obj.put("siteManager", this.siteManager);
+        System.out.println(obj.toString());
+        new API("http://localhost:9000/authorizedEmployees/sm1/sites").postValue(obj);
     }
     
     public void updateSiteDetails(){
         JSONObject obj = new JSONObject();
-        obj.put("siteName", this.siteName);
-        obj.put("siteAddress", this.siteAddress);
-        obj.put("siteAddress", this.siteManager);
+        obj.put("name", this.siteName);
+        obj.put("address", this.siteAddress);
+        obj.put("siteManager", this.siteManager);
         
-        new API(""+Integer.toString(this.siteID)).updateValue(obj);
+        new API("http://localhost:9000/sites"+Integer.toString(this.siteID)).updateValue(obj);
     }
     
 }

@@ -21,7 +21,11 @@ public class ProcurementFacade {
     
     //API class 
     public JSONArray getValues(String url){
-        return new API(url).getValues();
+        try{
+            return new API(url).getValues();
+        } catch(Exception e){
+            return null;
+        }
     }
     
     public void postValue(String url, JSONObject data) {
@@ -37,8 +41,9 @@ public class ProcurementFacade {
         new Item(name, price, category).postItem();
     }
     
+//  setPurchaseOrderApprove(int purchaseOrderId, String managerId, int supplierId, String status)
     public String setApproveOrder(int purchaseId, String status, String sitemanagerId, int supplierId){
-        return new PurchaseOrder(purchaseId, sitemanagerId, status, supplierId).setApproveOrder();
+        return new Manager().setPurchaseOrderApprove(purchaseId, sitemanagerId, supplierId, status);
     }
     
     //Add new site and Update existing site's details

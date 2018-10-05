@@ -36,9 +36,9 @@ public class API {
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
 
-            if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("Failed : HTTP error code : " + Integer.toString(conn.getResponseCode()));
-            }
+//            if (conn.getResponseCode() != 200) {
+//                throw new RuntimeException("Failed : HTTP error code : " + Integer.toString(conn.getResponseCode()));
+//            }
 
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
@@ -78,13 +78,13 @@ public class API {
             }
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
-            System.out.println("Output from server");
+            System.out.println("single Output from server");
             while ((line = br.readLine()) != null) {
                 response.append(line);
             }
             conn.disconnect();
             obj = new JSONObject(response.toString());
-            System.out.println(obj.toString());
+//            System.out.println(obj.toString());
 
         } catch (JSONException e) {
 //            e.printStackTrace();
